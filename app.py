@@ -4,6 +4,20 @@ from google.oauth2.service_account import Credentials
 import pandas as pd
 import plotly.express as px
 import json
+import time
+
+# --- AUTO-REFRESH: 5 SEC ---
+if 'autorefresh_last_run' not in st.session_state:
+    st.session_state['autorefresh_last_run'] = time.time()
+if time.time() - st.session_state['autorefresh_last_run'] > 5:
+    st.session_state['autorefresh_last_run'] = time.time()
+    st.experimental_rerun()
+
+# --- Manual Refresh ---
+st.title("📊 Financial Tracker Dashboard")
+if st.button('🔄 Manual Refresh (Click anytime)'):
+    st.session_state['manual_refresh'] = st.session_state.get('manual_refresh', 0) + 1
+    st.experimental_rerun()
 
 # --- Google Sheets setup ---
 SHEET_URL = "https://docs.google.com/spreadsheets/d/15DvUPuzkUOIw7JxDx69peorkoVfOff58OMTsllszLYM/edit?usp=sharing"
@@ -15,9 +29,8 @@ SCOPE = [
 # Read JSON creds via Streamlit secrets manager
 creds = json.loads(st.secrets["gcp_service_account"])
 
-@st.cache_data
-def load_data():
-    """Load data from Google Sheets with caching and Streamlit secrets"""
+def load_data_live():
+    """Always get the freshest data from Google Sheets."""
     try:
         credentials = Credentials.from_service_account_info(creds, scopes=SCOPE)
         client = gspread.authorize(credentials)
@@ -38,9 +51,7 @@ def load_data():
     except Exception as e:
         return None, f"Error loading data: {str(e)}"
 
-# --- Streamlit UI ---
-st.title("📊 Financial Tracker Dashboard")
-df, error = load_data()
+df, error = load_data_live()
 
 if df is None:
     st.error(f"❌ {error}")
@@ -76,7 +87,7 @@ with tab3:
     st.plotly_chart(fig3, use_container_width=True)
     st.dataframe(merch_exp.rename(columns={'Debit Amount': 'Total Spend (₹)'}))
 
-# --- Optional Filters ---
+# --- Optional Sidebar Filters ---
 st.sidebar.header("Filter Transactions")
 selected_category = st.sidebar.multiselect("Category", df['Category'].unique())
 selected_merchant = st.sidebar.multiselect("Business/Person Name", df['Business/Person Name'].unique())
