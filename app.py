@@ -62,8 +62,10 @@ with tab1:
     st.header("Summary Statistics")
     total_spent = df['Debit Amount'].sum()
     total_income = df['Credit Amount'].sum()
+    account_balance = total_income - total_spent
     st.metric("Total Spent", f"₹{total_spent:,.2f}")
     st.metric("Total Income", f"₹{total_income:,.2f}")
+    st.metric("Account Balance", f"₹{account_balance:,.2f}")
     st.subheader("Balance Over Time")
     df['Balance'] = df['Credit Amount'].cumsum() - df['Debit Amount'].cumsum()
     fig = px.line(df, x='Timestamp', y='Balance', title='Balance Over Time')
