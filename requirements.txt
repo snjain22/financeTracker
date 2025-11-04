@@ -4,3 +4,4 @@ pandas
 plotly
 requests
 google-auth
+oauth2client
