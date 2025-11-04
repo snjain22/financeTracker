@@ -11,12 +11,12 @@ if 'autorefresh_last_run' not in st.session_state:
     st.session_state['autorefresh_last_run'] = time.time()
 if time.time() - st.session_state['autorefresh_last_run'] > 5:
     st.session_state['autorefresh_last_run'] = time.time()
-    st.experimental_rerun()
+    st.rerun()
 
 st.title("📊 Financial Tracker Dashboard")
 if st.button('🔄 Manual Refresh (Click anytime)'):
     st.session_state['manual_refresh'] = st.session_state.get('manual_refresh', 0) + 1
-    st.experimental_rerun()
+    st.rerun()
 
 # --- Google Sheets setup ---
 SHEET_URL = "https://docs.google.com/spreadsheets/d/15DvUPuzkUOIw7JxDx69peorkoVfOff58OMTsllszLYM/edit?usp=sharing"
