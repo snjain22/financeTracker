@@ -1,6 +1,6 @@
 import streamlit as st
 import gspread
-from oauth2client.service_account import Credentials
+from google.oauth2.service_account import Credentials
 import pandas as pd
 import plotly.express as px
 import os
