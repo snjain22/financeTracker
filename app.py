@@ -11,7 +11,7 @@ if 'autorefresh_last_run' not in st.session_state:
     st.session_state['autorefresh_last_run'] = time.time()
 if time.time() - st.session_state['autorefresh_last_run'] > 5:
     st.session_state['autorefresh_last_run'] = time.time()
-    st.experimental_rerun()
+    st.rerun()
 
 # --- Manual Refresh ---
 st.title("📊 Financial Tracker Dashboard")
